@@ -53,7 +53,7 @@ let server=app.listen(3457,function(){// is a Port number
 //To Connect MongoDB
 const connectDB = async () => {
     try {
-      const conn = await mongoose.connect(`mongodb://127.0.0.1:27017/ArtVistaDatabase`, {
+      const conn = await mongoose.connect(process.env.MONGODB_URL, {
       });
       console.log(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error) {
