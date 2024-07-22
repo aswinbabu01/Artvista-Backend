@@ -8,6 +8,7 @@ let app=express();
 const multer = require('multer');
 const path = require('path');
 
+
 let bodyparser=require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true }))
 app.use(bodyparser.json())
@@ -18,14 +19,15 @@ app.use("/images",express.static(path.join(__dirname,"public/images")));
  
 //2nd Step- Interlinking the routes.js file and app.js file
 require('./routes')(app);
-// app.use(cors());
-// app.options('*', cors());
+app.use(cors());
+app.options('*', cors());
 
-app.use(cors({
-  origin: "https://669e99459863b213d0a52de3--fancy-youtiao-bdd17b.netlify.app/", // Replace with your frontend origin
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-}));
+
+// app.use(cors({
+//   origin: "https://inquisitive-biscochitos-4ec763.netlify.app/", // Replace with your frontend origin
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+// }));
 
 const storage = multer.diskStorage({
   destination:(req,file,cb)=>{
