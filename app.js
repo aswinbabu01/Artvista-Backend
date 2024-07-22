@@ -22,7 +22,7 @@ require('./routes')(app);
 // app.options('*', cors());
 
 app.use(cors({
-  origin: "https://inquisitive-biscochitos-4ec763.netlify.app/", // Replace with your frontend origin
+  origin: "https://669e99459863b213d0a52de3--fancy-youtiao-bdd17b.netlify.app/", // Replace with your frontend origin
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
