@@ -48,10 +48,16 @@ app.post("/upload",upload.single("file"),(req,res)=>{
   }
 })
 //3rd Step- Creating a server
-let server=app.listen(3457,function(){// is a Port number
-    console.log("Server listening at Port",server.address().port)
-    connectDB();
-}); 
+// let server=app.listen(3457,function(){// is a Port number
+//     console.log("Server listening at Port",server.address().port)
+//     connectDB();
+// });
+// Start the server
+const PORT = process.env.PORT || 3457;
+const server = app.listen(PORT, function () {
+  console.log("Server listening at Port", server.address().port);
+  connectDB();
+});
 //To Connect MongoDB
 const connectDB = async () => {
     try {
