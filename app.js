@@ -1,4 +1,3 @@
-@@ -1,13 +1,14 @@
 //creating a local Server
 // 1st step
 let express=require('express');
@@ -13,26 +12,22 @@ const path = require('path');
 let bodyparser=require("body-parser");
 app.use(bodyparser.urlencoded({ extended: true }))
 app.use(bodyparser.json())
-@@ -18,14 +19,15 @@ app.use("/images",express.static(path.join(__dirname,"public/images")));
+require('dotenv').config();
 
+//to get static images from server using URL path
+app.use("/images",express.static(path.join(__dirname,"public/images")));
+ 
 //2nd Step- Interlinking the routes.js file and app.js file
 require('./routes')(app);
-// app.use(cors());
-// app.options('*', cors());
 app.use(cors());
 app.options('*', cors());
 
 
-// app.use(cors({
-//   origin: "https://669e99459863b213d0a52de3--fancy-youtiao-bdd17b.netlify.app/", // Replace with your frontend origin
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+app.use(cors({
+  origin: "*", // Replace with your frontend origin
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
-// app.use(cors({
-//   origin: "https://inquisitive-biscochitos-4ec763.netlify.app/", // Replace with your frontend origin
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-// }));
 
 const storage = multer.diskStorage({
   destination:(req,file,cb)=>{
@@ -53,10 +48,16 @@ app.post("/upload",upload.single("file"),(req,res)=>{
   }
 })
 //3rd Step- Creating a server
-let server=app.listen(3457,function(){// is a Port number
-    console.log("Server listening at Port",server.address().port)
-    connectDB();
-}); 
+// let server=app.listen(3457,function(){// is a Port number
+//     console.log("Server listening at Port",server.address().port)
+//     connectDB();
+// });
+// Start the server
+const PORT = process.env.PORT || 3457;
+const server = app.listen(PORT, function () {
+  console.log("Server listening at Port", server.address().port);
+  connectDB();
+});
 //To Connect MongoDB
 const connectDB = async () => {
     try {
