@@ -1,71 +1,52 @@
-//creating a local Server
-// 1st step
-let express=require('express');
-let mongoose=require('mongoose');
-const cors = require('cors');
-const nodemon= require('nodemon');
-let app=express();
-const multer = require('multer');
-const path = require('path');
+import React,{useState ,useEffect} from "react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import Allpaintings from "./Pages/Allpaintings";
+import Vintage from "./Pages/Vintage";
+import Modern from "./Pages/Modern";
+import Abstract from "./Pages/Abstract";
+import Aboutus from "./Pages/Aboutus";
+import Cart from "./components/Cart";
+import Footer from "./components/Footer";
+import Loginpage from "./components/Loginpage";
+import Registerpage from "./components/Registerpage";
+import ArtistPage from "./components/ArtistPage.jsx";
+import Payment from "./components/Payment.jsx";
+import axios from 'axios';
 
+function App() {
+  const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  useEffect(()=>{
+    axios.get('https://artvista-backend-fnh0.onrender.com/readjsfile',{withCredentials:true})
+    .then((resp)=>{
+      setData(resp.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+    });
+  },[])
+  return (
+    <div className="App">
+      <Navbar onSearch={setSearchTerm}/>      
+      <Routes>
+        <Route path="/" element={<Home data={data.product} />} />
+        <Route path="/allpaintings" element={<Allpaintings data={data.product} searchTerm={searchTerm} />} />
+        <Route path="/vintage" element={<Vintage data={data.product} searchTerm={searchTerm} />} />
+        <Route path="/modern" element={<Modern data={data.product} searchTerm={searchTerm} />} />
+        <Route path="/abstract" element={<Abstract data={data.product} searchTerm={searchTerm} />} />
+        <Route path="/about" element={<Aboutus/>} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/login" element={<Loginpage />} />
+        <Route path="/register" element={<Registerpage />} />        
+        <Route path="/artistpage" element={<ArtistPage data={data.product}/>}/>        
+        <Route path="/payment" element={<Payment/>}/>
+      </Routes>
+      
+      <Footer />
+    </div>
+  );
+}
 
-let bodyparser=require("body-parser");
-app.use(bodyparser.urlencoded({ extended: true }))
-app.use(bodyparser.json())
-require('dotenv').config();
-
-//to get static images from server using URL path
-app.use("/images",express.static(path.join(__dirname,"public/images")));
- 
-//2nd Step- Interlinking the routes.js file and app.js file
-require('./routes')(app);
-app.use(cors());
-app.options('*', cors());
-
-
-app.use(cors({
-  origin: "*", // Replace with your frontend origin
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-}));
-
-const storage = multer.diskStorage({
-  destination:(req,file,cb)=>{
-    cb(null, path.join(__dirname,"public/images"));
-  },
-  filename:(req,file,cb)=>{
-    cb(null,file.originalname)
-  }
-})
-const upload = multer({storage});
-app.post("/upload",upload.single("file"),(req,res)=>{
-  try{
-    // console.log(req.file.path,"image path before multer upload");
-    res.status(200).json("Image uploaded successfully!");
-  }catch(err){
-    res.status(500).json("image not uploaded!");
-    console.log(err);
-  }
-})
-//3rd Step- Creating a server
-// let server=app.listen(3457,function(){// is a Port number
-//     console.log("Server listening at Port",server.address().port)
-//     connectDB();
-// });
-// Start the server
-const PORT = process.env.PORT || 3457;
-const server = app.listen(PORT, function () {
-  console.log("Server listening at Port", server.address().port);
-  connectDB();
-});
-//To Connect MongoDB
-const connectDB = async () => {
-    try {
-      const conn = await mongoose.connect(process.env.MONGODB_URL, {
-      });
-      console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-      console.error(error.message);
-      process.exit(1);
-    }
-  }
+export default App;
